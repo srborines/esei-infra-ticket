@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="/templates/styles.css">
+	<title>{{ info.Name }}</title>
+</head>
+<body>
+<div id="dvHeader">
+    <table width="100%">
+        <tr>
+            <td width="60%"><b><a href="{{access_link}}">{{user_name}}</a></b></td>
+            <td width="40%">
+                <h1>{{ info.Name }}</h1>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="dvContainer">
+    <nav id="dvGeneralActions" class="clsMenu">
+        <a href="http://calendar.google.com" target="_blank">
+            <img height="24px" width="24px" title="calendario"
+            class="styled-button" src="/res/calendar.svg"/>
+        </a>
+        <br/><a href="http://mail.google.com" target="_blank">
+            <img height="24px" width="24px" title="e.mail"
+            class="styled-button" src="/res/email.svg"/>
+        </a>
+        <br/><a href="http://wordreference.com" target="_blank">
+            <img height="24px" width="24px" title="word reference"
+            class="styled-button" src="/res/book.svg"/>
+        </a>
+        <br/>
+    </nav>
+    <div id="dvContents">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

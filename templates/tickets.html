@@ -1,0 +1,37 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<div id="dvInnerContents">
+    <div id="dvSpecificActions" class="clsMenu">
+        <a href="/stories/add">
+            <img height="24px" width="24px" title="new story"
+                 class="styled-button" src="/res/add.svg"/>
+        </a>
+        <br/>
+    </div>
+    <div id="dvTitle">
+        <img height="32px" width="32px" title="stories" src="/res/story.svg"/>
+        <b>Stories</b>
+    </div>
+    <div id="dvBody">
+        {% for story in stories %}
+            <div id="dvEntry"><p>
+            <a href="/manage_chapters?story_id={{story.key.urlsafe()}}">
+                <img width="16px" height="16px" title="go"
+                     class="styled-button" src="/res/work.svg"/>
+            </a>
+            <a href="/stories/modify?story_id={{story.key.urlsafe()}}">
+                <img width="16px" height="16px" title="modify"
+                     class="styled-button" src="/res/modify.svg"/>
+            </a>
+            <a href="/stories/delete?story_id={{story.key.urlsafe()}}">
+                <img width="16px" height="16px" title="delete"
+                     class="styled-button" src="/res/delete.svg"/>
+            </a>
+            {% include "story_description.html" %}
+            </p></div>
+        {% else %}
+            No stories yet.
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+application: esei-infra-ticket
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: res/favicon.ico
+  upload: favicon\.ico
+
+- url: /templates
+  static_dir: templates
+  application_readable: true
+
+- url: /res
+  static_dir: res
+
+- url: /error
+  script: handlers.error.app
+
+- url: /info
+  script: handlers.info.app
+
+- url: /manage_tickets
+  script: handlers.manage_stories.app
+  login: required
+
+- url: /tickets/add
+  script: handlers.stories.add.app
+  login: required
+
+- url: /tickets/modify
+  script: handlers.stories.modify.app
+  login: required
+
+- url: /tickets/delete
+  script: handlers.stories.delete.app
+  login: required
+
+- url: /
+  script: handlers.welcome.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: "2.6"

@@ -1,0 +1,35 @@
+{% extends "skeleton.html" %}
+{% block content %}
+    <div id="dvInnerContents">
+        <div id="dvSpecificActions" class="clsMenu">
+                <a href="/manage_stories">
+                    <img width="24px" height="24px" title="back" class="styled-button" src="/res/back.svg"/>
+                </a>
+        </div>
+        <div id="dvTitle">
+            <p>Delete story</p>
+        </div>
+        <div id="dvBody">
+        <form   id="frmDeleteStory"
+                action="/stories/delete?story_id={{story.key.urlsafe()}}"
+                method="post">
+            <p>
+                {% include "story_description.html" %}
+                {% if story.comments %}
+                    <br><i>{{story.comments}}</i>
+                {% endif %}
+            </p>
+            <div id="dvWarning">
+                <img height="24px" height="24px" src="/res/warning.svg" title="warning" alt="warning">
+                &nbsp;Once deleted, a story cannot be retrieved. All its chapters will be deleted too.
+            </div>
+            <input type="image"
+                        width="16px" height="16px"
+                        class="styled-button" src="/res/delete.svg"
+                        title="delete" alt="delete"
+                        onSubmit="javascript: document.frmDeleteStory.submit()"
+                    />
+        </form>
+        </div>
+    </div>
+{% endblock %}

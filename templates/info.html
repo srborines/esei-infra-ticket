@@ -1,0 +1,16 @@
+{% extends "skeleton.html" %}
+{% block content %}
+    <div id="dvInnerContents">
+        <div id="dvSpecificActions" class="clsMenu">
+                <a href="{{url}}">
+                    <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
+                </a>
+        </div>
+        <div id="dvTitle">
+            <p>Info</p>
+        </div>
+        <div id="dvBody">
+            <p /><i>{{msg}}</i>
+        </div>
+    </div>
+{% endblock %}

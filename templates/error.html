@@ -1,0 +1,20 @@
+{% extends "skeleton.html" %}
+{% block content %}
+    <div id="dvInnerContents">
+        <div id="dvSpecificActions" class="clsMenu">
+            <a href="/manage_stories">
+                <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
+            </a>
+        </div>
+        <div id="dvTitle">
+            <p>Error</p>
+        </div>
+        <div id="dvInnerContents">
+            <div id="dvBody">
+                {{ info.Name }}&nbsp;{{ info.Version }}
+                <p /><b>Error</b>:
+                <br/><i>{{error_msg}}</i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
