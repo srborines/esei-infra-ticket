@@ -1,5 +1,5 @@
 cron:
 - description: "daily report job"
   url: /report
-  target: beta
-  schedule: at 8:00am
+  schedule: every day 09:00
+  timezone: Europe/Madrid
