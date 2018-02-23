@@ -1,0 +1,5 @@
+cron:
+- description: "daily report job"
+  url: /report
+  target: beta
+  schedule: at 8:00am

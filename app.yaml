@@ -22,6 +22,10 @@ handlers:
 - url: /info
   script: handlers.info.app
 
+- url: /report
+  script: handlers.report.app
+  login: admin
+
 - url: /manage_tickets
   script: handlers.manage_stories.app
   login: required
