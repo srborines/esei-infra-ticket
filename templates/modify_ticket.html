@@ -17,14 +17,19 @@
 
     function chk() {
         var toret = true;
+
         var edTitle = document.getElementById( "edTitle" );
-        var edSubtitle = document.getElementById( "edSubtitle" );
-        var edSummary = document.getElementById( "edSummary" );
+        var edDesc = document.getElementById( "edDesc" );
 
         hideError();
 
-        if ( edTitle.value.trim().length == 0 ) {
+        if ( edTitle.value.trim().length === 0 ) {
             showError( "The title is mandatory." );
+            toret = false;
+        }
+
+        if ( edDesc.value.trim().length === 0 ) {
+            showError( "The description is mandatory." );
             toret = false;
         }
 
@@ -33,38 +38,105 @@
 </script>
 <div id="dvInnerContents">
     <div id="dvSpecificActions" class="clsMenu">
-        <a href="/manage_stories">
+        <a href="/manage_tickets">
             <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
         </a>
     </div>
     <div id="dvTitle">
-    <p><img height="32px" width="32px" title="stories" src="/res/story.svg"/>Modify Story</p>
+    <p><img height="32px" width="32px" title="tickets" src="/res/ticket.svg"/>Modify Ticket</p>
     </div>
     <div id="dvBody">
     <p>
-    <form id="frmModifyStory"
+    <form id="frmModifyTicket"
         onsubmit="javascript: return chk();"
-        action="/stories/modify?story_id={{story.key.urlsafe()}}" method="post">
+        action="/tickets/modify?ticket_id={{ticket.key.urlsafe()}}" method="post">
         <p>
+        <label><b>Serial</b></label> #{{ ticket.serial }}
+        <label><b>Date </b></label> {{ ticket.added}}
+        <br />
         <b><label for="edTitle">Title</label></b> <input type="text" name="title" id="edTitle" size="80"
-                value="{{story.title}}"
+                value="{{ticket.title}}"
                 style="border:none;background-color:lightgray"/>
         <br/>
-        <b><label for="edSubtitle">Subtitle</label></b> <input type="text" name="subtitle" id="edSubtitle" size="80"
-                value="{{story.subtitle}}"
+        <b><label for="edOwnerEmail">Owner e.mail</label></b> <input type="text" name="owner_email" id="edOwnerEmail" size="80"
+                value="{{ticket.owner_email}}"
                 style="border:none;background-color:lightgray"/>
         <br />
-        <b><label for="edSummary">Summary</label></b>
-        <textarea name="summary" id="edSummary" placeholder="Write some text..."
+        <b><label for="edClientEmail">Client e.mail</label></b> <input type="text" name="client_email" id="edClientEmail" size="80"
+                value="{{ticket.client_email}}"
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="edClassroom">Classroom</label></b> <input type="text" name="classroom" id="edClassroom" size="80"
+                value="{{ticket.classroom}}"
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="edDesc">Description</label></b>
+        <textarea name="desc" id="edDesc" placeholder="Write some text..."
                 rows="10" cols="80"
-                style="border:none;background-color:lightgray">{{story.summary}}</textarea>
-        <br/>
+                style="border:none;background-color:lightgray">{{ticket.desc}}</textarea>
+        <br />
+        <b><label for="cbProgress">Progress</label></b>
+            <select name="progress" id="cbProgress" style="border:none;background-color:lightgray">
+                {%  for k in Progress.values.keys() %}
+                    <option value="{{ Progress.from_value_to_constant(Progress.values[k]) }}"
+                        {%  if k == ticket.progress %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Progress.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.progress}}"
+            </select>
+        <br />
+        <b><label for="cbPriority">Priority</label></b>
+            <select name="priority" id="cbPriority" style="border:none;background-color:lightgray">
+                {%  for k in Priority.values.keys() %}
+                    <option value="{{ Priority.from_value_to_constant(Priority.values[k]) }}"
+                        {%  if k == ticket.priority %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Priority.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.priority}}"
+            </select>
+        <br />
+        <b><label for="cbType">Type</label></b>
+            <select name="type" id="cbType" style="border:none;background-color:lightgray">
+                {%  for k in Type.values.keys() %}
+                    <option value="{{ Type.from_value_to_constant(Type.values[k]) }}"
+                        {%  if k == ticket.type %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Type.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.type}}"
+            </select>
+        <br />
+        <br />
+        <b><label for="cbStatus">Status</label></b>
+            <select name="status" id="cbStatus" style="border:none;background-color:lightgray">
+                {%  for k in Status.values.keys() %}
+                    <option value="{{ Status.from_value_to_constant(Status.values[k]) }}"
+                        {%  if k == ticket.status %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Status.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.status}}"
+            </select>
         <p>
         <input type="image"
             class="styled-button"
             title="modify" alt="modify"
             width="16px" height="16px" src="/res/modify.svg"
-            onsubmit="javascript: document.frmModifyStory.submit()"/>
+            onsubmit="javascript: document.frmModifyTicket.submit()"/>
         </p>
     </form>
     </div>

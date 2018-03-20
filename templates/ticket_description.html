@@ -1,1 +1,5 @@
-<b>{{story.title}}</b> ({{story.added}}){% if story.subtitle %}: <i>{{story.subtitle}}</i>{% endif %}
+ <td><b>#{{ ticket.serial }}</b></td>
+ <td><i><a href="/tickets/chk?ticket_id={{ ticket.key.urlsafe() }}">{{ ticket.title }}</a></i></td>
+ <td>{{ Priority.values[ticket.priority] }}</td>
+ <td>{{ Progress.values[ticket.progress] }}</td>
+ <td><b>{{ Status.values[ticket.status] }}</b></td>

@@ -4,6 +4,9 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+inbound_services:
+- mail
+
 handlers:
 - url: /favicon\.ico
   static_files: res/favicon.ico
@@ -26,21 +29,49 @@ handlers:
   script: handlers.report.app
   login: admin
 
+- url: /manage_users
+  script: handlers.manage_users.app
+  login: required
+
+- url: /users/add
+  script: handlers.users.add.app
+  login: required
+
+- url: /users/modify
+  script: handlers.users.modify.app
+  login: required
+
+- url: /users/delete
+  script: handlers.users.delete.app
+  login: required
+
 - url: /manage_tickets
-  script: handlers.manage_stories.app
+  script: handlers.manage_tickets.app
+  login: required
+
+- url: /tickets/chk
+  script: handlers.tickets.chk.app
   login: required
 
 - url: /tickets/add
-  script: handlers.stories.add.app
+  script: handlers.tickets.add.app
+  login: required
+
+- url: /tickets/toner
+  script: handlers.tickets.toner.app
   login: required
 
 - url: /tickets/modify
-  script: handlers.stories.modify.app
+  script: handlers.tickets.modify.app
   login: required
 
 - url: /tickets/delete
-  script: handlers.stories.delete.app
+  script: handlers.tickets.delete.app
   login: required
+
+- url: /_ah/mail/.+
+  script: handlers.manage_incoming_email.app
+  login: admin
 
 - url: /
   script: handlers.welcome.app

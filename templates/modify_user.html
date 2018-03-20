@@ -1,0 +1,87 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<script type="text/javascript">
+    function hideError() {
+        document.getElementById( "dvError" ).style.display = "none";
+    }
+
+    function showError(msg) {
+        var dvError = document.getElementById( "dvError" );
+        var pError = document.createElement( "p" );
+
+        dvError.innerHTML = "";
+        dvError.appendChild( pError );
+        pError.appendChild( document.createTextNode( msg ) );
+        dvError.style.display = "block";
+    }
+
+    function chk() {
+        var toret = true;
+
+        var edEmail = document.getElementById( "edEmail" );
+        var edNick = document.getElementById( "edNick" );
+
+        hideError();
+
+        if ( edEmail.value.trim().length === 0 ) {
+            showError( "The e.mail is mandatory." );
+            toret = false;
+        }
+
+        if ( edNick.value.trim().length === 0 ) {
+            showError( "The nick is mandatory." );
+            toret = false;
+        }
+
+        return toret;
+    }
+</script>
+<div id="dvInnerContents">
+    <div id="dvSpecificActions" class="clsMenu">
+        <a href="/manage_users">
+            <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
+        </a>
+    </div>
+    <div id="dvTitle">
+    <p><img height="32px" width="32px" title="users" src="/res/user.svg"/>Modify Users</p>
+    </div>
+    <div id="dvBody">
+    <p>
+    <form id="frmModifyUser"
+        onsubmit="javascript: return chk();"
+        action="/users/modify?user_id={{user_to_modify.key.urlsafe()}}" method="post">
+        <p>
+        <b><label for="edEmail">E.mail</label></b> <input type="text" name="email" id="edEmail" size="80"
+                value="{{user_to_modify.email}}"
+                style="border:none;background-color:lightgray"/>
+        <br/>
+        <b><label for="edNick">Nick</label></b> <input type="text" name="nick" id="edNick" size="80"
+                value="{{user_to_modify.nick}}"
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="cbLevel">Level</label></b>
+            <select name="level" id="cbLevel" style="border:none;background-color:lightgray">
+                {%  for k in Level.values.keys() %}
+                    <option value="{{ Level.from_value_to_constant(Level.values[k]) }}"
+                        {%  if k == user_to_modify.level %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Level.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ Level.from_value_to_constant(Level.values[user_to_modify.level]) }}"
+            </select>
+        <p>
+        <input type="image"
+            class="styled-button"
+            title="modify" alt="modify"
+            width="16px" height="16px" src="/res/modify.svg"
+            onsubmit="javascript: document.frmModifyUser.submit()"/>
+        </p>
+    </form>
+    </div>
+    <div id="dvError">
+    </div>
+</div>
+{% endblock %}

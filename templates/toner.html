@@ -1,0 +1,102 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<script type="text/javascript">
+    function hideError() {
+        document.getElementById( "dvError" ).style.display = "none";
+    }
+
+    function showError(msg) {
+        var dvError = document.getElementById( "dvError" );
+        var pError = document.createElement( "p" );
+
+        dvError.innerHTML = "";
+        dvError.appendChild( pError );
+        pError.appendChild( document.createTextNode( msg ) );
+        dvError.style.display = "block";
+    }
+
+    function chk() {
+        var toret = true;
+
+        var edPrinterMaker = document.getElementById( "edPrinterMaker" );
+        var edPrinterModel = document.getElementById( "edPrinterModel" );
+        var edCartridgeModel = document.getElementById( "edCartridgeModel" );
+        var edNumberOfUnits = document.getElementById( "edNumberOfUnits" );
+
+        hideError();
+
+        if ( edPrinterMaker.value.trim().length < 5 ) {
+            showError( "The printer maker is mandatory." );
+            toret = false;
+        }
+
+        if ( edPrinterModel.value.trim().length < 5 ) {
+            showError( "The printer model is mandatory." );
+            toret = false;
+        }
+
+        if ( edCartridgeModel.value.trim().length < 5 ) {
+            showError( "The cartridge  model is mandatory." );
+            toret = false;
+        }
+
+        if ( edNumberOfUnits.value.trim().length < 1 ) {
+            showError( "The cartridge  model is mandatory." );
+            toret = false;
+        }
+
+        var numUnits = parseInt( edNumberOfUnits.value );
+
+        if ( numUnits < 1
+          || numUnits > 10 )
+        {
+            showError( "Incorrect number of units." );
+            toret = false;
+        }
+
+        return toret;
+    }
+</script>
+<div id="dvInnerContents">
+    <div id="dvSpecificActions" class="clsMenu">
+        <a href="/manage_tickets">
+            <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
+        </a>
+    </div>
+    <div id="dvTitle">
+    <p><img height="32px" width="32px" title="tickets" src="/res/ticket.svg"/>Modify Ticket</p>
+    </div>
+    <div id="dvBody">
+    <p>
+    <form id="frmInkCartridgeRequest"
+        onsubmit="javascript: return chk();"
+        action="/tickets/toner" method="post">
+        <p>
+        <b><label for="edPrinterMaker">Printer maker</label></b> <input type="text" name="printer_maker" id="edPrinterMaker" size="80"
+                value=""
+                style="border:none;background-color:lightgray"/>
+        <br/>
+        <b><label for="edPrinterModel">Printer model</label></b> <input type="text" name="printer_model" id="edPrinterModel" size="80"
+                value=""
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="edCartridgeModel">Cartridge model</label></b> <input type="text" name="cartridge_model" id="edCartridgeModel" size="80"
+                value=""
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="edNumberOfUnits">Number of units</label></b> <input type="number" name="number_of_units" id="edNumberOfUnits" size="80"
+                value="1" min="1" max="10"
+                style="border:none;text-align: right;background-color:lightgray"/>
+        <br />
+        <input type="image"
+            class="styled-button"
+            title="modify" alt="modify"
+            width="16px" height="16px" src="/res/modify.svg"
+            onsubmit="javascript: document.frmInkCartridgeRequest.submit()"/>
+        </p>
+    </form>
+    </div>
+    <div id="dvError">
+    </div>
+</div>
+{% endblock %}

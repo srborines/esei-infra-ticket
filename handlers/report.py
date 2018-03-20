@@ -1,30 +1,41 @@
 #!/usr/bin/env python
 # (c) Baltasar 2018 MIT License <baltasarq@gmail.com>
 
+
 import webapp2
-from webapp2_extras import jinja2
+from google.appengine.api.mail import EmailMessage
+import datetime as dt
+
 
 from model.appinfo import AppInfo
+from model.ticket import Ticket
 
 
 class ReportHandler(webapp2.RequestHandler):
-    EmailRcpt = "infraestructura@esei.uvigo.es"
-
     def get(self):
-        message_body = "Daily report\n\nPending open tickets\n\n---\n\n"
+        today = dt.datetime.today()
 
-        for ticket in []:
-	    message_body += str(ticket)
+        if (today.weekday() < 5
+        and today.month != 8):
+            message_body = "Daily report\n\nPending open tickets\n\n===\n\n"
+            tickets = Ticket.query(Ticket.status == Ticket.Status.Open).order(-Ticket.added)
 
-        message_body += "\n\n---\n\n"
-        message = mail.EmailMessage(
-            sender="esei-infra-ticket@esei.uvigo.es",
-            subject="Report"
-            to=ReportHandler.EmailRcpt
-            body=message_body)
+            for ticket in tickets:
+                message_body += str(ticket) + "\n\n---\n\n"
 
-        message.send()
-        self.response.write("Report sent to: " + ReportHandler.EmailRcpt);
+            message_body += "\n\n---\n\n" + AppInfo.AppWeb + "\n"
+
+            EmailMessage(
+                    sender=AppInfo.AppEmail,
+                    subject=AppInfo.Name + " report: " + today.strftime("%Y-%m-%d %H:%M:%S"),
+                    to=AppInfo.BroadcastEmail,
+                    body=message_body.decode("ascii", "replace")).send()
+
+            self.redirect("/info?url=/manage_tickets&msg=Report sent to: "
+                          + AppInfo.BroadcastEmail.decode("ascii", "replace"))
+        else:
+            self.redirect("/info?url=/manage_tickets&msg=Report only to be sent 9h mon-fri, except on august")
+
 
 app = webapp2.WSGIApplication([
     ("/report", ReportHandler),

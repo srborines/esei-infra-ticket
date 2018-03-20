@@ -2,29 +2,29 @@
 {% block content %}
     <div id="dvInnerContents">
         <div id="dvSpecificActions" class="clsMenu">
-                <a href="/manage_tickets">
+                <a href="/manage_users">
                     <img width="24px" height="24px" title="back" class="styled-button" src="/res/back.svg"/>
                 </a>
         </div>
         <div id="dvTitle">
-            <p>Delete Ticket</p>
+            <p>Delete user</p>
         </div>
         <div id="dvBody">
-        <form   id="frmDeleteTicket"
-                action="/tickets/delete?ticket_id={{ticket.key.urlsafe()}}"
+        <form   id="frmDeleteUser"
+                action="/users/delete?user_id={{user_info.key.urlsafe()}}"
                 method="post">
             <p>
-                {% include "ticket_description.html" %}
+                {% include "user_description.html" %}
             </p>
             <div id="dvWarning">
                 <img height="24px" height="24px" src="/res/warning.svg" title="warning" alt="warning">
-                &nbsp;Once deleted, a ticket cannot be retrieved. All its associated comments will be deleted too.
+                &nbsp;Once deleted, a user cannot be retrieved.
             </div>
             <input type="image"
                         width="16px" height="16px"
                         class="styled-button" src="/res/delete.svg"
                         title="delete" alt="delete"
-                        onSubmit="javascript: document.frmDeleteTicket.submit()"
+                        onSubmit="javascript: document.frmDeleteUser.submit()"
                     />
         </form>
         </div>

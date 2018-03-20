@@ -1,6 +1,4 @@
-# Boli
-# GAE application to assist in the process of writing
-
+# infra-esei-tickets (c) Baltasar 2018 MIT License <baltasarq@gmail.com>
 
 import webapp2
 from webapp2_extras import jinja2
@@ -16,10 +14,10 @@ class WelcomePage(webapp2.RequestHandler):
         user = users.get_current_user()
         
         if user:
-                self.redirect("/manage_stories")
+                self.redirect("/manage_tickets")
                 return
         else:
-                access_link = users.create_login_url("/manage_stories")
+                access_link = users.create_login_url("/manage_tickets")
 
         template_values = {
             "info": AppInfo,

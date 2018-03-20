@@ -1,0 +1,162 @@
+{% extends "skeleton.html" %}
+{% block content %}
+<script type="text/javascript">
+    function hideError()
+    {
+        document.getElementById( "dvError" ).style.display = "none";
+    }
+
+    function showError(msg)
+    {
+        const dvError = document.getElementById( "dvError" );
+        const pError = document.createElement( "p" );
+
+        dvError.innerHTML = "";
+        dvError.appendChild( pError );
+        pError.appendChild( document.createTextNode( msg ) );
+        dvError.style.display = "block";
+        window.scrollTo( 0,document.body.scrollHeight );
+    }
+
+    function chk()
+    {
+        var toret = true;
+        const edComment = document.getElementById( "edComment" );
+
+        hideError();
+
+        if ( edComment.value.trim().length < {{ MinCommentLength }} ) {
+            showError( "Comment contents should be at least of "
+                        + {{ MinCommentLength }} + " chars.");
+            toret = false;
+        }
+
+        return toret;
+    }
+
+    function quote(id)
+    {
+        const txtComment = document.getElementById( id );
+        const edComment = document.getElementById( "edComment" );
+
+        if ( txtComment != null
+          && edComment != null )
+        {
+            const content = txtComment.value.split( '\n' );
+            var quoted = "\n";
+
+            content.forEach( function(s) {
+                    quoted += "> " + s + "\n"
+            });
+
+            edComment.value += quoted;
+            window.scrollTo(0, document.body.scrollHeight);
+            edComment.focus();
+        }
+
+        return;
+    }
+
+    function adjustTextAreas()
+    {
+        const edComment = document.getElementById( "edComment" );
+        const txtAreas = document.getElementsByTagName( "textarea" );
+
+        for(var i = 0; i < txtAreas.length; ++i) {
+            var txtArea = txtAreas[ i ];
+
+            if ( txtArea != edComment ) {
+                var numActualLines = txtArea.value.split( '\n' ).length;
+                txtArea.rows = numActualLines < 10 ? numActualLines : 10;
+            }
+        }
+
+        return;
+    }
+
+    window.onload = adjustTextAreas;
+</script>
+<div id="dvInnerContents">
+    <div id="dvSpecificActions" class="clsMenu">
+        <a href="/manage_tickets">
+            <img width="24px" height="24px" alt="back" title="back" class="styled-button" src="/res/back.svg"/>
+        </a>
+    </div>
+    <div id="dvTitle">
+    <p><img height="32px" width="32px" title="tickets" src="/res/ticket.svg"/>Modify Ticket</p>
+    </div>
+    <div id="dvBody">
+    <br /><label><b>Serial</b></label> #{{ ticket.serial }}
+    <br /><label><b>Date </b></label> {{ ticket.added }}
+    <br/><label><b>Title </b></label> {{ ticket.title }}
+    <br/><label><b>Owner </b></label> {{ ticket.owner_email }}
+    <br /><label><b>Priority </b></label> {{ Priority.values[ticket.priority] }}
+    <br /><label><b>Type </b></label> {{ Type.values[ticket.type] }}
+    <br/><label><b>Description</b></label> <textarea id="txtDesc" readonly="true" cols="80" rows="5">{{ ticket.desc }}</textarea>
+
+    <form id="frmAddCommentTicket"
+        onsubmit="javascript: return chk();"
+        action="/tickets/chk?ticket_id={{ticket.key.urlsafe()}}" method="post">
+        <p>
+        <b><label for="edClientEmail">Client e.mail</label></b> <input size="30" type="text" name="client_email" id="edClientEmail" size="80"
+                value="{{ticket.client_email}}"
+                style="border:none;background-color:lightgray"/>
+        <br />
+        <b><label for="edClassroom">Classroom</label></b> <input size="15" type="text" name="clasroom" id="edClassroom" size="80"
+                value="{{ticket.classroom}}"
+                style="border:none;background-color:lightgray"/>
+        <p>
+        <label><b>Comments</b></label>
+        <p>
+            {% for comment in comments %}
+                <label><b>Author:</b></label> {{ comment.author }}
+                <textarea id="{{ "txtComment" + (loop.index0 | string) }}" readonly="true" cols="80" rows="5">{{ comment.text }}</textarea>
+                <a href="javascript: quote('{{ "txtComment" + (loop.index0 | string) }}')">
+                    <img width="16px" height="16px" title="quote" alt="quote"
+                     class="styled-button" src="/res/quote.svg"/>
+                </a>
+                <br /><br />
+            {% else %}
+                No comments yet.
+            {%  endfor  %}
+        </p>
+    <br />
+        <label><b>New comment</b></label>
+        <textarea id="edComment" name="comment" cols="80" rows="10" placeholder="Your comment here..."></textarea>
+        <b><label for="cbProgress">Progress</label></b>
+            <select name="progress" id="cbProgress" style="border:none;background-color:lightgray">
+                {%  for k in Progress.values.keys() %}
+                    <option value="{{ Progress.from_value_to_constant(Progress.values[k]) }}"
+                        {%  if k == ticket.progress %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Progress.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.progress}}"
+            </select>
+        <b><label for="cbStatus">Status</label></b>
+            <select name="status" id="cbStatus" style="border:none;background-color:lightgray">
+                {%  for k in Status.values.keys() %}
+                    <option value="{{ Status.from_value_to_constant(Status.values[k]) }}"
+                        {%  if k == ticket.status %}
+                            selected="1"
+                        {%  endif %}
+                        >
+                        {{ Status.values[k] }}
+                    </option>
+                {%  endfor %}
+                value="{{ticket.status}}"
+            </select>
+        <input type="image"
+            class="styled-button"
+            title="modify" alt="modify"
+            width="16px" height="16px" src="/res/modify.svg"
+            onsubmit="javascript: document.frmAddCommentTicket.submit()"/>
+    </form>
+    </div>
+    <div id="dvError">
+    </div>
+</div>
+{% endblock %}

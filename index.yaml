@@ -35,3 +35,61 @@ indexes:
   - name: user
   - name: added
     direction: desc
+
+- kind: Ticket
+  properties:
+  - name: added
+    direction: desc
+  - name: priority
+    direction: desc
+
+- kind: Ticket
+  properties:
+  - name: open
+  - name: added
+    direction: desc
+
+- kind: Ticket
+  properties:
+  - name: owner_email
+  - name: status
+  - name: added
+
+- kind: Ticket
+  properties:
+  - name: status
+  - name: added
+    direction: desc
+
+- kind: Ticket
+  properties:
+  - name: status
+  - name: added
+    direction: desc
+  - name: priority
+    direction: desc
+
+- kind: User
+  properties:
+  - name: added
+    direction: desc
+  - name: level
+
+- kind: User
+  properties:
+  - name: added
+    direction: desc
+  - name: level
+    direction: desc
+
+- kind: User
+  properties:
+  - name: email
+  - name: added
+    direction: desc
+
+- kind: User
+  properties:
+  - name: level
+  - name: added
+    direction: desc

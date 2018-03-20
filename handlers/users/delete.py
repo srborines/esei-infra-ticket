@@ -7,16 +7,16 @@ from google.appengine.ext import ndb
 from webapp2_extras import jinja2
 
 import model.user as usr_mgt
-from model.ticket import Ticket
+from model.user import User
 from model.appinfo import AppInfo
 
 
-class DeleteTicket(webapp2.RequestHandler):
+class DeleteUser(webapp2.RequestHandler):
     def get(self):
         try:
-            id = self.request.GET['ticket_id']
+            id = self.request.GET['user_id']
         except:
-            self.redirect("/error?msg=ticket was not found")
+            self.redirect("/error?msg=user was not found")
             return
 
         user = users.get_current_user()
@@ -25,14 +25,14 @@ class DeleteTicket(webapp2.RequestHandler):
             usr_info = usr_mgt.retrieve(user)
 
             if not (usr_info.is_admin()):
-                self.redirect("/error?msg=User " + user.email + " not allowed to delete tickets")
+                self.redirect("/error?msg=User " + user.email + " not allowed to delete users")
                 return
 
             user_name = usr_info.nick
             access_link = users.create_logout_url("/")
 
             try:
-                ticket = ndb.Key(urlsafe=id).get()
+                user_to_delete = ndb.Key(urlsafe=id).get()
             except:
                 self.redirect("/error?msg=key #" + id + " does not exist")
                 return
@@ -41,15 +41,12 @@ class DeleteTicket(webapp2.RequestHandler):
                 "info": AppInfo,
                 "user_name": user_name,
                 "access_link": access_link,
-                "ticket": ticket,
-                "Status": Ticket.Status,
-                "Type": Ticket.Type,
-                "Progress": Ticket.Progress,
-                "Priority": Ticket.Priority,
+                "user_info": user_to_delete,
+                "Level": User.Level,
             }
 
             jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("delete_ticket.html", **template_values));
+            self.response.write(jinja.render_template("delete_user.html", **template_values));
         else:
             self.redirect("/")
 
@@ -57,7 +54,7 @@ class DeleteTicket(webapp2.RequestHandler):
 
     def post(self):
         try:
-            id = self.request.GET['ticket_id']
+            id = self.request.GET['user_id']
         except:
             id = None
 
@@ -74,21 +71,21 @@ class DeleteTicket(webapp2.RequestHandler):
                 self.redirect("/error?msg=user " + usr_info.email + "not allowed to delete users")
                 return
 
-            # Get ticket to delete by key
+            # Get user to delete by key
             try:
-                ticket = ndb.Key(urlsafe=id).get()
+                user_to_delete = ndb.Key(urlsafe=id).get()
             except:
                 self.redirect("/error?msg=key #" + id + " does not exist")
                 return
 
             # Delete
-            ticket.key.delete()
-            self.redirect("/info?url=/manage_tickets&msg=Ticket deleted: "
-                          + ticket.title.encode("ascii", "replace"))
+            user_to_delete.key.delete()
+            self.redirect("/info?url=/manage_users&msg=User deleted: "
+                            + user_to_delete.email.encode("ascii", "replace"))
         else:
             self.redirect("/")
 
 
 app = webapp2.WSGIApplication([
-    ("/tickets/delete", DeleteTicket),
+    ("/users/delete", DeleteUser),
 ], debug=True)

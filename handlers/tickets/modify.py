@@ -1,54 +1,60 @@
 #!/usr/bin/env python
-# MIT License
-# (c) baltasar 2017
+# coding: utf-8
+# (c) Baltasar 2018 MIT License <baltasarq@gmail.com>
 
-import datetime
-import time
 
 import webapp2
+import datetime as dt
 from google.appengine.api import users
 from google.appengine.ext import ndb
 from webapp2_extras import jinja2
 
-from model.story import Story
+import model.user as usr_mgt
+import model.ticket as tickets
+from model.ticket import Ticket
 from model.appinfo import AppInfo
 
 
-class ModifyStory(webapp2.RequestHandler):
+class ModifyTicket(webapp2.RequestHandler):
     def get(self):
         try:
-            id = self.request.GET['story_id']
+            id = self.request.GET['ticket_id']
         except:
-            self.redirect("/error?msg=story was not found")
+            self.redirect("/error?msg=ticket was not found")
             return
 
-        user = users.get_current_user()
+        usr = users.get_current_user()
 
-        if user:
-            user_name = user.nickname()
+        if usr:
+            user = usr_mgt.retrieve(usr)
+            user_name = user.nick
             access_link = users.create_logout_url("/")
 
             try:
-                story = ndb.Key(urlsafe = id).get()
+                ticket = ndb.Key(urlsafe=id).get()
             except:
-                self.redirect("/error?msg=key does not exist")
+                self.redirect("/error?msg=key #" + id + " does not exist")
                 return
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
+                "user": user_name,
                 "access_link": access_link,
-                "story": story,
+                "ticket": ticket,
+                "Status": Ticket.Status,
+                "Progress": Ticket.Progress,
+                "Priority": Ticket.Priority,
+                "Type": Ticket.Type,
             }
 
             jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("modify_story.html", **template_values));
+            self.response.write(jinja.render_template("modify_ticket.html", **template_values))
         else:
             self.redirect("/")
 
     def post(self):
         try:
-            id = self.request.GET['story_id']
+            id = self.request.GET['ticket_id']
         except:
             id = None
 
@@ -57,43 +63,47 @@ class ModifyStory(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
-        story = None
+        ticket = None
 
         if user:
-            # Get story by key
+            usr_info = usr_mgt.retrieve(user)
+
+            # Get ticket by key
             try:
-                story = ndb.Key(urlsafe = id).get()
+                ticket = ndb.Key(urlsafe=id).get()
             except:
-                self.redirect("/error?msg=key does not exist")
+                self.redirect("/error?msg=key " + id + " does not exist")
                 return
 
-            story.title = self.request.get("title", "").strip()
-            story.subtitle = self.request.get("subtitle", "").strip()
-            story.summary = self.request.get("summary", "").strip()
+            ticket.title = self.request.get("title", "").strip()
+            ticket.desc = self.request.get("desc", "").strip()
+            ticket.client_email = self.request.get("client_email", "").strip()
+            ticket.classroom = self.request.get("classroom", "").strip()
+            ticket.progress = Ticket.Progress.value_from_str(self.request.get("progress"))
+            ticket.status = Ticket.Status.value_from_str(self.request.get("status"))
+            ticket.priority = Ticket.Priority.value_from_str(self.request.get("priority"))
+            ticket.type = Ticket.Type.value_from_str(self.request.get("type"))
 
             # Chk
-            if len(story.title) < 1:
+            if len(ticket.title) < 1:
                 self.redirect("/error?msg=Aborted modification: missing title")
                 return
 
-            # Chk title
-            existing_stories = Story.query(Story.title == story.title)
-            if  (existing_stories
-             and existing_stories.count() > 0
-             and existing_stories.get() != story):
-                self.redirect("/error?msg=Story with title \""
-                            + story.title.encode("ascii", "replace")
-                            + "\" already exists.")
+            if len(ticket.desc) < 1:
+                self.redirect("/error?msg=Aborted modification: missing desc")
                 return
 
+            # Report
+            tickets.send_email_for(ticket, "modified", "    modified by: " + str(usr_info))
+
             # Save
-            story.put()
-            self.redirect("/info?msg=Story modified: \""
-                + story.title.encode("ascii", "replace")
-                + "\"&url=/manage_stories")
+            tickets.update(ticket)
+            self.redirect("/info?url=/manage_tickets&msg=Ticket modified: "
+                          + ticket.title.encode("ascii", "replace"))
         else:
             self.redirect("/")
 
+
 app = webapp2.WSGIApplication([
-    ("/stories/modify", ModifyStory),
+    ("/tickets/modify", ModifyTicket),
 ], debug=True)
