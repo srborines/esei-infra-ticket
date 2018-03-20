@@ -27,7 +27,7 @@ class TicketsManager(webapp2.RequestHandler):
             access_link = users.create_logout_url("/")
 
             # Retrieve the relevant tickets
-            tickets = Ticket.query().order(Ticket.added)
+            tickets = Ticket.query().order(-Ticket.added)
 
             if not show_all:
                 tickets = tickets.filter(Ticket.status == Ticket.Status.Open)
