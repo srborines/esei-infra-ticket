@@ -47,11 +47,11 @@ class AddToner(webapp2.RequestHandler):
             num_units = 1
 
             # Chk
-            if len(cartridge_model) < 5:
+            if len(cartridge_model) < 3:
                 self.redirect("/error?msg=Aborted modification: missing cartridge model")
                 return
 
-            if len(printer_maker) < 5:
+            if len(printer_maker) < 2:
                 self.redirect("/error?msg=Aborted modification: missing printer maker")
                 return
 

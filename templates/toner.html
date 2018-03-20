@@ -25,7 +25,7 @@
 
         hideError();
 
-        if ( edPrinterMaker.value.trim().length < 5 ) {
+        if ( edPrinterMaker.value.trim().length < 2 ) {
             showError( "The printer maker is mandatory." );
             toret = false;
         }
@@ -35,7 +35,7 @@
             toret = false;
         }
 
-        if ( edCartridgeModel.value.trim().length < 5 ) {
+        if ( edCartridgeModel.value.trim().length < 3 ) {
             showError( "The cartridge  model is mandatory." );
             toret = false;
         }
