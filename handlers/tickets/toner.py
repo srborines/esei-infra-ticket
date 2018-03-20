@@ -84,7 +84,7 @@ class AddToner(webapp2.RequestHandler):
             ticket.classroom = ""
 
             # Report
-            tickets.send_email_for(ticket, "Ink cartridge request", ticket.desc)
+            tickets.send_email_for(ticket, "Ink cartridge request", "    by " + str(usr_info))
 
             # Save
             tickets.update(ticket)
