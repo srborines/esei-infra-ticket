@@ -1,19 +1,44 @@
 {% extends "skeleton.html" %}
 {% block content %}
 <script type="text/javascript">
-    function reloadToShowAll()
+    function reloadToApplyFilters()
     {
         const cbShowAll = document.getElementById( "cbShowAll" );
-        var url = "/manage_tickets?show_all="
+        const edSearch = document.getElementById( "edSearch" );
+        var url = "/manage_tickets?show_all=";
+        var search_terms = edSearch.value.trim().toLowerCase();
 
-        url += cbShowAll.checked ? "true" : "false"
+        // Show all
+        url += cbShowAll.checked ? "true" : "false";
+
+        // Search terms
+        if ( edSearch.value.length > 0 ) {
+            url += "&search=" + search_terms;
+        }
+
+        // Reload
         window.location = url;
+    }
+
+    function resetSearch()
+    {
+        const edSearch = document.getElementById( "edSearch" );
+
+        edSearch.value = "";
+        reloadToApplyFilters();
     }
 
     window.onload = function() {
         const cbShowAll = document.getElementById( "cbShowAll" );
+        const edSearch = document.getElementById( "edSearch" );
 
-        cbShowAll.checked = "{{ '1' if show_all else '0' }}" === '1';
+        cbShowAll.checked = '{{ '1' if show_all else '0' }}' === '1';
+        edSearch.value = "{{ search_terms }}";
+        edSearch.onkeyup = function (ev) {
+            if ( ev.key === "Enter" ) {
+                reloadToApplyFilters();
+            }
+        }
     }
 </script>
 
@@ -49,17 +74,17 @@
     <div id="dvBody">
         <div id="dvCfg">
             <input id="edSearch" type="text" placeholder="search" />
-            <a href="/search?txt=">
+            <a href="javascript: reloadToApplyFilters()">
                 <img width="16px" height="16px" title="search"
                      class="styled-button" src="/res/search.svg"/>
             </a>
-            <a href="/manage_tickets">
+            <a href="javascript: resetSearch()">
                 <img width="16px" height="16px" title="reset"
                      class="styled-button" src="/res/reset.svg"/>
             </a>
             <input id="cbShowAll"
                    type="checkbox"
-                   onchange="javascript: reloadToShowAll()"/>
+                   onchange="javascript: reloadToApplyFilters()"/>
              <label for="cbShowAll">Show also closed tickets.</label>
         </div>
 

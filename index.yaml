@@ -52,8 +52,21 @@ indexes:
 - kind: Ticket
   properties:
   - name: owner_email
+  - name: added
+    direction: desc
+
+- kind: Ticket
+  properties:
+  - name: owner_email
   - name: status
   - name: added
+
+- kind: Ticket
+  properties:
+  - name: owner_email
+  - name: status
+  - name: added
+    direction: desc
 
 - kind: Ticket
   properties:
