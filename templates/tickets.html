@@ -1,19 +1,28 @@
 {% extends "skeleton.html" %}
 {% block content %}
 <script type="text/javascript">
-    function reloadToApplyFilters()
+    function reloadToApplyFilters(pageNumber)
     {
         const cbShowAll = document.getElementById( "cbShowAll" );
         const edSearch = document.getElementById( "edSearch" );
-        var url = "/manage_tickets?show_all=";
+        var url = "/manage_tickets?";
         var search_terms = edSearch.value.trim().toLowerCase();
 
+        // Page number
+        if ( pageNumber != null
+          && pageNumber > 0 )
+        {
+            url += "page=" + pageNumber + "&"
+        }
+
         // Show all
-        url += cbShowAll.checked ? "true" : "false";
+        if ( cbShowAll.checked ) {
+            url += "show_all=true&";
+        }
 
         // Search terms
         if ( edSearch.value.length > 0 ) {
-            url += "&search=" + search_terms;
+            url += "search=" + search_terms;
         }
 
         // Reload
@@ -110,9 +119,40 @@
             {% include "ticket_description.html" %}
             </tr>
         {% else %}
-            No tickets yet.
+            No tickets.
         {% endfor %}
         </table></p>
+        <div id="dvPages">
+            {% if pages_info.last > 0 %}
+                <p align="center">
+                <a href="#" onclick="javascript: reloadToApplyFilters( 0 )">
+                    <img height="16px" width="16px" title="first page"
+                         class="styled-button" src="/res/go_first.svg"/></a>
+
+                <a href="#" onclick="javascript: reloadToApplyFilters({{ pages_info.previous }})">
+                    <img height="16px" width="16px" title="previous page"
+                         class="styled-button" src="/res/go_previous.svg"/></a>
+
+                {% for page in pages_info.relevant %}
+                    {% if page == pages_info.current %}
+                        {{ page + 1 }}
+                    {% else %}
+                        <a class="styled-button"
+                           href="#"
+                           onclick="javascript: reloadToApplyFilters({{ page }})">&nbsp;{{ page + 1 }}&nbsp;</a>
+                    {% endif %}
+                {% endfor %}
+
+                <a href="#" onclick="javascript: reloadToApplyFilters({{ pages_info.next }})">
+                    <img height="16px" width="16px" title="next page"
+                         class="styled-button" src="/res/go_next.svg"/></a>
+
+                <a href="#" onclick="javascript: reloadToApplyFilters({{ pages_info.last }})">
+                    <img height="16px" width="16px" title="last page"
+                         class="styled-button" src="/res/go_last.svg"/></a>
+                </p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
