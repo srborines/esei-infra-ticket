@@ -12,7 +12,7 @@
         if ( pageNumber != null
           && pageNumber > 0 )
         {
-            url += "page=" + pageNumber + "&"
+            url += "page=" + pageNumber + '&'
         }
 
         // Show all
@@ -105,11 +105,11 @@
                 <img width="16px" height="16px" title="go"
                      class="styled-button" src="/res/settings.svg"/>
             </a>
-            <a href="/tickets/modify?ticket_id={{ticket.key.urlsafe()}}">
-                <img width="16px" height="16px" title="modify"
-                     class="styled-button" src="/res/modify.svg"/>
-            </a>
             {% if usr_info.is_admin() %}
+                <a href="/tickets/modify?ticket_id={{ticket.key.urlsafe()}}">
+                    <img width="16px" height="16px" title="modify"
+                         class="styled-button" src="/res/modify.svg"/>
+                </a>
                 <a href="/tickets/delete?ticket_id={{ticket.key.urlsafe()}}">
                     <img width="16px" height="16px" title="delete"
                          class="styled-button" src="/res/delete.svg"/>

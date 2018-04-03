@@ -59,7 +59,7 @@ class TicketsManager(webapp2.RequestHandler):
 
     def get(self):
         try:
-            arg_show_all = self.request.GET['kk']
+            arg_show_all = self.request.GET['show_all']
         except KeyError:
             arg_show_all = "false"
 
@@ -73,7 +73,7 @@ class TicketsManager(webapp2.RequestHandler):
         except KeyError:
             arg_search_terms = ""
 
-        show_all = True if arg_show_all == "true" else False
+        show_all = arg_show_all == "true"
         list_search_terms = [x.lower() for x in arg_search_terms.split()]
         pages_info = {}
 
