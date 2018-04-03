@@ -20,15 +20,13 @@ class DeleteUser(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             if not (usr_info.is_admin()):
                 self.redirect("/error?msg=User " + user.email + " not allowed to delete users")
                 return
 
-            user_name = usr_info.nick
             access_link = users.create_logout_url("/")
 
             try:
@@ -39,9 +37,10 @@ class DeleteUser(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
                 "access_link": access_link,
-                "user_info": user_to_delete,
+                "usr_info": usr_info,
+                "user_to_delete": user_to_delete,
+                "user_desc": user_to_delete,
                 "Level": User.Level,
             }
 

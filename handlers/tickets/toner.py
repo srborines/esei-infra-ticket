@@ -16,15 +16,14 @@ from model.appinfo import AppInfo
 class AddToner(webapp2.RequestHandler):
     def get(self):
         usr = users.get_current_user()
+        usr_info = usr_mgt.retrieve(usr)
 
-        if usr:
-            user = usr_mgt.retrieve(usr)
-            user_name = user.nick
+        if usr and usr_info:
             access_link = users.create_logout_url("/")
 
             template_values = {
                 "info": AppInfo,
-                "user": user_name,
+                "usr_info": usr_info,
                 "access_link": access_link,
             }
 
@@ -35,10 +34,9 @@ class AddToner(webapp2.RequestHandler):
 
     def post(self):
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             # Retrieve values
             cartridge_model = self.request.get("cartridge_model", "").strip()
             printer_maker = self.request.get("printer_maker", "").strip()
@@ -76,9 +74,10 @@ class AddToner(webapp2.RequestHandler):
             ticket.priority = Ticket.Priority.Low
             ticket.type = Ticket.Type.Supplies
 
-            ticket.title = "Supplies: toner #" + cartridge_model
+            ticket.title = "Supplies: toner"
             ticket.desc = "Ink cartridge requested for: "\
                           + printer_maker + " " + printer_model + '\n'\
+                          + "Cartridge #" + cartridge_model + "\n"\
                           + str(num_units) + " units"
             ticket.client_email = ""
             ticket.classroom = ""

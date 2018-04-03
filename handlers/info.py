@@ -6,6 +6,7 @@ import webapp2
 from webapp2_extras import jinja2
 
 from model.appinfo import AppInfo
+import model.user as usr_mgt
 
 
 class InfoHandler(webapp2.RequestHandler):
@@ -13,7 +14,7 @@ class InfoHandler(webapp2.RequestHandler):
         try:
             msg = self.request.GET['msg']
             url = self.request.GET['url']
-        except:
+        except KeyError:
             msg = None
             url = "/"
 
@@ -22,6 +23,7 @@ class InfoHandler(webapp2.RequestHandler):
             return
 
         template_values = {
+            "usr_info": usr_mgt.create_empty_user(),
             "msg": msg,
             "info": AppInfo,
             "url": url,

@@ -11,10 +11,9 @@ import model.user as usr_mgt
 class AddUser(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             if not (usr_info.is_admin()):
                 self.redirect("/error?msg=user " + usr_info.email + "not allowed to add new users")
                 return

@@ -11,7 +11,7 @@
         </div>
         <div id="dvBody">
         <form   id="frmDeleteUser"
-                action="/users/delete?user_id={{user_info.key.urlsafe()}}"
+                action="/users/delete?user_id={{user_to_delete.key.urlsafe()}}"
                 method="post">
             <p>
                 {% include "user_description.html" %}

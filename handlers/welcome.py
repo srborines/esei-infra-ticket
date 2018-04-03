@@ -6,22 +6,25 @@ from google.appengine.api import users
 
 
 from model.appinfo import AppInfo
+import model.user as usr_mgt
 
 
 class WelcomePage(webapp2.RequestHandler):
     def get(self):
-        user_name = "login"
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
         
-        if user:
+        if user and usr_info:
                 self.redirect("/manage_tickets")
                 return
         else:
+                usr_info = usr_mgt.create_empty_user()
+                usr_info.nick = "Login"
                 access_link = users.create_login_url("/manage_tickets")
 
         template_values = {
             "info": AppInfo,
-            "user_name": user_name,
+            "usr_info": usr_info,
             "access_link": access_link
         }
         

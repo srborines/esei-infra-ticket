@@ -40,7 +40,7 @@ class Ticket(ndb.Model):
     comments = ndb.StructuredProperty(Comment, repeated=True)
 
     def __str__(self):
-        return "#" + str(self.serial) + " " + self.title\
+        return "#" + str(self.serial) + " " + self.title.encode("ascii", "replace")\
                 + '\n' + str(self.added) + " (" + self.owner_email + ")\n"\
                 + (" -> " + self.client_email if self.client_email else "")\
                 + (" @ " + self.classroom if self.classroom else "")\
@@ -48,7 +48,7 @@ class Ticket(ndb.Model):
                 + Ticket.Priority.values[self.priority] + " "\
                 + Ticket.Progress.values[self.progress] + " "\
                 + Ticket.Status.values[self.status] + "| "\
-                + "\n'" + self.desc + "'"
+                + "\n'" + self.desc.encode("ascii", "replace") + "'"
 
 
 def create(user):
@@ -85,8 +85,8 @@ def send_email_for(ticket, subject, body):
     subject = subject + " ticket #" + str(ticket.serial)\
         + ' ' + ticket.title
 
-    body = str_time + '\n' + str(ticket) + '\n'\
-        + body + "\n\n---\n\n" + AppInfo.AppWeb + '\n'
+    body = str_time + u'\n' + str(ticket) + u'\n'\
+        + body + u"\n\n---\n\n" + AppInfo.AppWeb + u'\n'
 
     subject = subject.encode("ascii", "replace")
     body = body.encode("ascii", "replace")

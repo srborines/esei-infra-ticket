@@ -26,10 +26,9 @@ class ChkTicket(webapp2.RequestHandler):
             return
 
         usr = users.get_current_user()
+        usr_info = usr_mgt.retrieve(usr)
 
-        if usr:
-            user = usr_mgt.retrieve(usr)
-            user_name = user.nick
+        if usr and usr_info:
             access_link = users.create_logout_url("/")
 
             try:
@@ -38,14 +37,14 @@ class ChkTicket(webapp2.RequestHandler):
                 self.redirect("/error?msg=key " + id + " does not exist")
                 return
 
-            if (user.email != ticket.owner_email
-            and user.is_client()):
-                self.redirect("/error?msg=User " + user.email + " not allowed to check tickets")
+            if (usr_info.email != ticket.owner_email
+            and usr_info.is_client()):
+                self.redirect("/error?msg=User " + usr_info.email + " not allowed to check tickets")
                 return
 
             template_values = {
                 "info": AppInfo,
-                "user": user_name,
+                "usr_info": usr_info,
                 "access_link": access_link,
                 "ticket": ticket,
                 "comments": ticket.comments,
@@ -72,11 +71,9 @@ class ChkTicket(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
-        ticket = None
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             # Get ticket by key
             try:
                 ticket = ndb.Key(urlsafe=id).get()

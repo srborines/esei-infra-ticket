@@ -19,14 +19,14 @@
     </div>
     <div id="dvBody">
         <p><table id="tblEntries">
-        {% for user_info in users %}
+        {% for user_desc in users %}
             <tr class="tblEntryRow">
             <td>
-            <a href="/users/modify?user_id={{user_info.key.urlsafe()}}">
+            <a href="/users/modify?user_id={{user_desc.key.urlsafe()}}">
                 <img width="16px" height="16px" title="modify"
                      class="styled-button" src="/res/modify.svg"/>
             </a>
-            <a href="/users/delete?user_id={{user_info.key.urlsafe()}}">
+            <a href="/users/delete?user_id={{user_desc.key.urlsafe()}}">
                 <img width="16px" height="16px" title="delete"
                      class="styled-button" src="/res/delete.svg"/>
             </a>

@@ -6,6 +6,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import users
 
 from model.enums import Enum
+from model.appinfo import AppInfo
 
 
 class User(ndb.Model):
@@ -46,6 +47,11 @@ def create(usr, level):
     return toret
 
 
+def create_empty_user():
+    """Used when there the user is not important."""
+    return User(email="", nick="", level=User.Level.Client)
+
+
 @ndb.transactional
 def update(user):
     """Updates a user.
@@ -62,12 +68,17 @@ def retrieve(usr):
     :param usr: The GAE user object.
     :return: The User retrieved, or a client created appropriately if not found.
     """
-    users = User.query(User.email == usr.email()).order(-User.added)
+    toret = None
 
-    if not users or users.count() < 1:
-        toret = create(usr, User.Level.Client)
-    else:
-        toret = users.iter().next()
-        toret.usr = usr
+    if usr:
+        usr_email = usr.email()
+        users = User.query(User.email == usr_email).order(-User.added)
+
+        if not users or users.count() < 1:
+            if usr_email.endswith(AppInfo.AllowedUserEmailNamespace):
+                toret = create(usr, User.Level.Client)
+        else:
+            toret = users.iter().next()
+            toret.usr = usr
 
     return toret

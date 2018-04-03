@@ -13,14 +13,13 @@ import model.user as usr_mgt
 class UsersManager(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        
-        if user:
-            user_name = user.nickname()
+        usr_info = usr_mgt.retrieve(user)
+
+        if user and usr_info:
             user_admin_set = User.query(User.level == User.Level.Admin).order(-User.added)
             user_staff_set = User.query(User.level != User.Level.Admin).order(User.level).order(-User.added)
             user_set = list(user_admin_set) + list(user_staff_set)
             access_link = users.create_logout_url("/")
-            usr_info = usr_mgt.retrieve(user)
 
             if not(usr_info.is_admin()):
                 self.redirect("/error?msg=User " + usr_info.nick + " not allowed to manage users")
@@ -28,7 +27,7 @@ class UsersManager(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
+                "usr_info": usr_info,
                 "access_link": access_link,
                 "users": user_set,
                 "Level": User.Level,

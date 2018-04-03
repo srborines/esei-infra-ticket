@@ -24,10 +24,13 @@ class ModifyTicket(webapp2.RequestHandler):
             return
 
         usr = users.get_current_user()
+        usr_info = usr_mgt.retrieve(usr)
 
-        if usr:
-            user = usr_mgt.retrieve(usr)
-            user_name = user.nick
+        if usr and usr_info:
+            if not usr_info.is_admin():
+                self.redirect("/error?url=manage_tickets&msg=Only admins can modify tickets.")
+                return
+
             access_link = users.create_logout_url("/")
 
             try:
@@ -38,7 +41,7 @@ class ModifyTicket(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user": user_name,
+                "usr_info": usr_info,
                 "access_link": access_link,
                 "ticket": ticket,
                 "Status": Ticket.Status,
@@ -63,15 +66,17 @@ class ModifyTicket(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
-        ticket = None
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
+        if user and usr_info:
+            if not usr_info.is_admin():
+                self.redirect("/error?url=manage_tickets&msg=Only admins can modify tickets.")
+                return
 
             # Get ticket by key
             try:
                 ticket = ndb.Key(urlsafe=id).get()
-            except:
+            except KeyError:
                 self.redirect("/error?msg=key " + id + " does not exist")
                 return
 

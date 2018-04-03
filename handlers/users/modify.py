@@ -21,10 +21,9 @@ class ModifyUser(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
+        user_info = usr_mgt.retrieve(user)
 
-        if user:
-            user_info = usr_mgt.retrieve(user)
-            user_name = user_info.nick
+        if user and user_info:
             access_link = users.create_logout_url("/")
 
             if not(user_info.is_admin()):
@@ -39,11 +38,10 @@ class ModifyUser(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
                 "access_link": access_link,
-                "user_info": user_info,
+                "usr_info": user_info,
+                "user_to_modify": user_to_modify,
                 "Level": User.Level,
-                "user_to_modify": user_to_modify
             }
 
             jinja = jinja2.get_jinja2(app=self.app)

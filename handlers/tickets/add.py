@@ -12,9 +12,9 @@ import model.user as usr_mgt
 class AddTicket(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
+        if user and usr_info:
             key = tickets.update(tickets.create(usr_info))
             self.redirect("/tickets/modify?ticket_id=" + key.urlsafe())
         else:

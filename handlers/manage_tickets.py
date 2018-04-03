@@ -78,9 +78,9 @@ class TicketsManager(webapp2.RequestHandler):
         pages_info = {}
 
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
         
-        if user:
-            usr_info = usr_mgt.retrieve(user)
+        if user and usr_info:
             user_name = usr_info.nick
             access_link = users.create_logout_url("/")
 
@@ -99,7 +99,6 @@ class TicketsManager(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
                 "access_link": access_link,
                 "tickets": tickets,
                 "Status": Ticket.Status,

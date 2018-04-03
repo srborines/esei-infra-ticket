@@ -20,15 +20,13 @@ class DeleteTicket(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             if not (usr_info.is_admin()):
                 self.redirect("/error?msg=User " + user.email + " not allowed to delete tickets")
                 return
 
-            user_name = usr_info.nick
             access_link = users.create_logout_url("/")
 
             try:
@@ -39,7 +37,7 @@ class DeleteTicket(webapp2.RequestHandler):
 
             template_values = {
                 "info": AppInfo,
-                "user_name": user_name,
+                "usr_info": usr_info,
                 "access_link": access_link,
                 "ticket": ticket,
                 "Status": Ticket.Status,
@@ -66,10 +64,9 @@ class DeleteTicket(webapp2.RequestHandler):
             return
 
         user = users.get_current_user()
+        usr_info = usr_mgt.retrieve(user)
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
-
+        if user and usr_info:
             if not (usr_info.is_admin()):
                 self.redirect("/error?msg=user " + usr_info.email + "not allowed to delete users")
                 return

@@ -10,3 +10,4 @@ class AppInfo:
     AppWeb = "http://esei-infra-ticket.appspot.com/"
     AppEmail = "esei-infra-ticket@esei-infra-ticket.appspotmail.com"
     BroadcastEmail = "infraestructura@esei.uvigo.es"
+    AllowedUserEmailNamespace = "@esei.uvigo.es"
