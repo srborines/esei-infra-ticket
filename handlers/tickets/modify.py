@@ -19,7 +19,7 @@ class ModifyTicket(webapp2.RequestHandler):
     def get(self):
         try:
             id = self.request.GET['ticket_id']
-        except:
+        except KeyError:
             self.redirect("/error?msg=ticket was not found")
             return
 
@@ -27,10 +27,6 @@ class ModifyTicket(webapp2.RequestHandler):
         usr_info = usr_mgt.retrieve(usr)
 
         if usr and usr_info:
-            if not usr_info.is_admin():
-                self.redirect("/error?url=manage_tickets&msg=Only admins can modify tickets.")
-                return
-
             access_link = users.create_logout_url("/")
 
             try:
@@ -58,7 +54,7 @@ class ModifyTicket(webapp2.RequestHandler):
     def post(self):
         try:
             id = self.request.GET['ticket_id']
-        except:
+        except KeyError:
             id = None
 
         if not id:
@@ -69,10 +65,6 @@ class ModifyTicket(webapp2.RequestHandler):
         usr_info = usr_mgt.retrieve(user)
 
         if user and usr_info:
-            if not usr_info.is_admin():
-                self.redirect("/error?url=manage_tickets&msg=Only admins can modify tickets.")
-                return
-
             # Get ticket by key
             try:
                 ticket = ndb.Key(urlsafe=id).get()

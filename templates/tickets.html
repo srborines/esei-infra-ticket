@@ -101,10 +101,6 @@
         {% for ticket in tickets %}
             <tr class="tblEntryRow">
             <td>
-            <a href="/tickets/chk?ticket_id={{ticket.key.urlsafe()}}">
-                <img width="16px" height="16px" title="go"
-                     class="styled-button" src="/res/settings.svg"/>
-            </a>
             {% if usr_info.is_admin() %}
                 <a href="/tickets/modify?ticket_id={{ticket.key.urlsafe()}}">
                     <img width="16px" height="16px" title="modify"

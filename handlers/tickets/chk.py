@@ -96,7 +96,7 @@ class ChkTicket(webapp2.RequestHandler):
                 ticket.comments.append(tickets.Comment(author=usr_info.email, text=new_comment))
 
                 # Report
-                tickets.send_email_for(ticket, "checked", usr_info.email + " says:\n" + new_comment)
+                tickets.send_email_chk_for(ticket, "checked", usr_info.email + " says:\n" + new_comment)
 
                 # Save
                 tickets.update(ticket)

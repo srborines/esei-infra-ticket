@@ -78,31 +78,38 @@ def create(user):
     return toret
 
 
+def send_email_chk_for(ticket, subject, body):
+    send_std_email_for(ticket, subject, body)
+
+
 def send_email_for(ticket, subject, body):
-    str_time = dt.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+    send_std_email_for(ticket, subject, str(ticket) + u'\n' + body)
+
+
+def send_std_email_for(ticket, subject, body):
+    body = dt.datetime.today().strftime("%Y-%m-%d %H:%M:%S")\
+           + "\n\nrcpts: " + AppInfo.BroadcastEmail + (", " + ticket.client_email if ticket.client_email else "") \
+           + body\
+           + u"\n\n---\n\n" + AppInfo.AppWeb + u'\n'
     subject = subject.strip().lower()
     subject = subject[0].upper() + subject[1:]
     subject = subject + " ticket #" + str(ticket.serial)\
         + ' ' + ticket.title
 
-    body = str_time + u'\n' + str(ticket) + u'\n'\
-        + body + u"\n\n---\n\n" + AppInfo.AppWeb + u'\n'
+    send_email(AppInfo.BroadcastEmail, subject, body)
+    if ticket.client_email:
+        send_email(ticket.client_email, subject, body)
 
+
+def send_email(rcpt, subject, body):
     subject = subject.encode("ascii", "replace")
     body = body.encode("ascii", "replace")
 
     EmailMessage(
         sender=AppInfo.AppEmail,
         subject=subject,
-        to=AppInfo.BroadcastEmail,
+        to=rcpt,
         body=body).send()
-
-    if ticket.client_email:
-        EmailMessage(
-            sender=AppInfo.AppEmail,
-            subject=subject,
-            to=ticket.client_email,
-            body=body).send()
 
 
 @ndb.transactional
