@@ -23,6 +23,20 @@
         </button>
         <div class="collapse navbar-collapse" id="infranavbar">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="operationsdropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Operations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="operationsdropdown">
+                        {% if usr_info.is_admin() %}
+                            <a class="dropdown-item" href="/manage_users">Manage users</a>
+                            <a class="dropdown-item" href="/report">Send email report</a>
+                        {% endif %}
+                            <a class="dropdown-item" href="/tickets/add">New ticket</a>
+                            <a class="dropdown-item" href="/tickets/toner">New toner ticket</a>
+                    </div>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="nav-item">
@@ -33,7 +47,7 @@
                             {{usr_info.nick}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="{{logout_link}}">Log out</a>
+                            <a class="dropdown-item" href="{{access_link}}">Log out</a>
                         </div>
                     </li>
                     {% else %}
