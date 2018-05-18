@@ -1,37 +1,60 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+
 <head>
-	<meta charset="utf-8"/>
-	<link rel="stylesheet" href="/templates/styles.css">
-	<title>{{ info.Name }}</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/templates/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/templates/css/luxtheme.bootstrap.min.css">
+
+    <title>{{ info.Name }}</title>
 </head>
+
 <body>
-<div id="dvHeader">
-    <table width="100%">
-        <tr>
-            <td width="60%"><b><a href="{{access_link}}">{{usr_info.nick}}</a></b></td>
-            <td width="40%">
-                <h1>{{ info.Name }}</h1>
-            </td>
-        </tr>
-    </table>
-</div>
-<div id="dvContainer">
-    <nav id="dvGeneralActions" class="clsMenu">
-        <a href="http://calendar.google.com" target="_blank">
-            <img height="24px" width="24px" title="calendario"
-            class="styled-button" src="/res/calendar.svg"/>
-        </a>
-        <br/><a href="http://mail.google.com" target="_blank">
-            <img height="24px" width="24px" title="e.mail"
-            class="styled-button" src="/res/email.svg"/>
-        </a>
-        <br/>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Infra Tickets</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#infranavbar" aria-controls="infranavbar"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="infranavbar">
+            <ul class="navbar-nav mr-auto">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item">
+                    {% if usr_info.nick is defined %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            {{usr_info.nick}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="{{logout_link}}">Log out</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{access_link}}">Log In</a>
+                    </li>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
     </nav>
-    <div id="dvContents">
-        {% block content %}
-        {% endblock %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% block content %} {% endblock %}
+            </div>
+        </div>
     </div>
-</div>
+
+    <script src="/templates/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/templates/js/popper.min.js"></script>
+    <script src="/templates/js/bootstrap.min.js"></script>
 </body>
+
 </html>
