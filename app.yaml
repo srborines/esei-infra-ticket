@@ -45,7 +45,7 @@ handlers:
   script: handlers.users.delete.app
   login: required
 
-- url: /tickets/(\d*)
+- url: /tickets(/\d*)?
   script: handlers.tickets.manage.app
   login: required
 
