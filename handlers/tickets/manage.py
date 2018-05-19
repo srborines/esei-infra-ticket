@@ -113,5 +113,5 @@ class TicketsManager(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/tickets/(\d*)', TicketsManager),
+    ('/tickets(/\d*)?', TicketsManager),
 ], debug=True)

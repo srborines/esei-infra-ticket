@@ -30,14 +30,14 @@ handlers:
   login: admin
 
 - url: /users
-  script: handlers.users.app
+  script: handlers.users.manage.app
   login: required
 
 - url: /users/add
   script: handlers.users.add.app
   login: required
 
-- url: /users/modify
+- url: /users/modify/(\d+)
   script: handlers.users.modify.app
   login: required
 
@@ -45,12 +45,12 @@ handlers:
   script: handlers.users.delete.app
   login: required
 
-- url: /tickets/(\d*)
+- url: /tickets(/\d*)?
   script: handlers.tickets.manage.app
   login: required
 
-- url: /tickets/chk
-  script: handlers.tickets.chk.app
+- url: /tickets/view/(.+)
+  script: handlers.tickets.view.app
   login: required
 
 - url: /tickets/add

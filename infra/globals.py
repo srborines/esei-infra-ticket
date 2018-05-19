@@ -38,7 +38,8 @@ class Globals:
         # If user is logged in set 'logged' view variable to True and add user info
         if user and user_info:
             variables["logged"] = True
-            variables["usr_info"] = user_info
+            variables["user_info"] = user_info
+            print(user_info.is_admin())
 
         # Obtain Jinja instance
         jinja = jinja2.get_jinja2(app=entity.app)

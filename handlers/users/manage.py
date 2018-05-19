@@ -37,5 +37,5 @@ class UsersManager(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/manage_users', UsersManager),
+    ('/users', UsersManager),
 ], debug=True)

@@ -59,23 +59,22 @@ def create(user):
     """
     now = dt.datetime.today()
     num_tickets = Ticket.query(Ticket.added == now).count() + 1
-    toret = Ticket()
+    ticket = Ticket()
 
-    toret.serial = int(str.format(
+    ticket.serial = int(str.format(
                         "{0:04d}{1:02d}{2:02d}{3:02d}",
                         now.year, now.month, now.day, num_tickets))
-    toret.title = "Big problem #" + str(num_tickets)
-    toret.owner_email = user.email
-    toret.client_email = ""
-    toret.classroom = ""
-    toret.desc = "Write a meaningful description of the problem, " \
-                 "also the steps to reproduce it."
-    toret.progress = Ticket.Progress.New
-    toret.status = Ticket.Status.Open
-    toret.type = Ticket.Type.Repair
-    toret.priority = Ticket.Priority.Low
+    ticket.title = ""
+    ticket.owner_email = user.email
+    ticket.client_email = ""
+    ticket.classroom = ""
+    ticket.desc = ""
+    ticket.progress = Ticket.Progress.New
+    ticket.status = Ticket.Status.Open
+    ticket.type = Ticket.Type.Repair
+    ticket.priority = Ticket.Priority.Low
 
-    return toret
+    return ticket
 
 
 def send_email_chk_for(ticket, subject, body):
