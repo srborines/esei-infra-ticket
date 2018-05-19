@@ -62,16 +62,14 @@
                 </thead>
                 <tbody>
                     {% for ticket in tickets %}
-                    <tr>
-                        <td>{{ticket.serial}}</td>
-                        <td>{{ticket_model.Priority.values[ticket.priority]}}</td>
-                        <td>{{ticket_model.Progress.values[ticket.progress] }}</td>
-                        <td>
-                            <a href="/tickets/chk?ticket_id={{ ticket.key.urlsafe() }}">
+                    <tr class="clickable-row" data-href="/tickets/chk?ticket_id={{ ticket.key.urlsafe() }}">
+                            <td>{{ticket.serial}}</td>
+                            <td>{{ticket_model.Priority.values[ticket.priority]}}</td>
+                            <td>{{ticket_model.Progress.values[ticket.progress] }}</td>
+                            <td>
                                 {{ ticket.title }}
-                            </a>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
