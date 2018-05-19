@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                     {% for ticket in tickets %}
-                    <tr class="clickable-row" data-href="/tickets/chk?ticket_id={{ ticket.key.urlsafe() }}">
+                    <tr class="clickable-row" data-href="/tickets/view/{{ ticket.key.urlsafe() }}">
                             <td>{{ticket.serial}}</td>
                             <td>{{ticket_model.Priority.values[ticket.priority]}}</td>
                             <td>{{ticket_model.Progress.values[ticket.progress] }}</td>
