@@ -39,7 +39,9 @@ class Globals:
         if user and user_info:
             variables["logged"] = True
             variables["user_info"] = user_info
-            print(user_info.is_admin())
+            variables["logout_link"] = users.create_logout_url("/")
+        else:
+            variables["login_link"] = users.create_login_url()
 
         # Obtain Jinja instance
         jinja = jinja2.get_jinja2(app=entity.app)
