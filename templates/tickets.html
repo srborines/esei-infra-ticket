@@ -69,6 +69,9 @@
                             <td>
                                 {{ ticket.title }}
                             </td>
+                            <td>
+                                <a href="/tickets/modify/{{ticket.key.urlsafe()}}" class="btn btn-info btn-sm">Edit</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

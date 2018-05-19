@@ -5,6 +5,10 @@
         <div class="col-md-12">
             <form>
                 <h1>Ticket #{{ticket.serial}}</h1>
+                <div class="my-3 col-md-12 align-right">
+                    <a href="/tickets/modify/{{ticket.key.urlsafe()}}" class="btn btn-sm btn-info">Edit</a>
+                    <a href="/tickets/delete/{{ticket.key.urlsafe()}}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
                 <fieldset>
                     <div class="form-group">
                         <label for="title">Ticket title</label>
