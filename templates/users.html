@@ -1,42 +1,27 @@
-{% extends "skeleton.html" %}
-{% block content %}
-<div id="dvInnerContents">
-    <div id="dvSpecificActions" class="clsMenu">
-        <a href="/manage_tickets">
-            <img height="24px" width="24px" title="back"
-                 class="styled-button" src="/res/back.svg"/>
-        </a>
-        <br/>
-        <a href="/users/add">
-            <img height="24px" width="24px" title="new user"
-                 class="styled-button" src="/res/add.svg"/>
-        </a>
-        <br/>
-    </div>
-    <div id="dvTitle">
-        <img height="32px" width="32px" title="users" style="background-color: black" src="/res/user.svg"/>
-        <b>Users</b>
-    </div>
-    <div id="dvBody">
-        <p><table id="tblEntries">
-        {% for user_desc in users %}
-            <tr class="tblEntryRow">
-            <td>
-            <a href="/users/modify?user_id={{user_desc.key.urlsafe()}}">
-                <img width="16px" height="16px" title="modify"
-                     class="styled-button" src="/res/modify.svg"/>
-            </a>
-            <a href="/users/delete?user_id={{user_desc.key.urlsafe()}}">
-                <img width="16px" height="16px" title="delete"
-                     class="styled-button" src="/res/delete.svg"/>
-            </a>
-            </td>
-            {% include "user_description.html" %}
-            </tr>
-        {% else %}
-            No users yet.
-        {% endfor %}
-        </table></p>
+{% extends "skeleton.html" %} {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mt-5">
+            <h1>Tickets</h1>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nick</th>
+                        <th>Email</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users%}
+                    <tr class="clickable-row" data-href="/users/{{ user.key.urlsafe() }}">
+                        <td><b>{{ "%30s" | format(user.nick) }}</b></td>
+                        <td><i>{{ "%50s" | format(user.email) }}</i></td>
+                        <td>{{ "%15s" | format(Level.values[user.level]) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}
