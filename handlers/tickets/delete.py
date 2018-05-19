@@ -2,90 +2,77 @@
 # (c) Baltasar 2018 MIT License <baltasarq@gmail.com>
 
 import webapp2
-from google.appengine.api import users
 from google.appengine.ext import ndb
-from webapp2_extras import jinja2
 
-import model.user as usr_mgt
+from infra.globals import Globals
 from model.ticket import Ticket
-from model.appinfo import AppInfo
 
 
 class DeleteTicket(webapp2.RequestHandler):
-    def get(self):
-        try:
-            id = self.request.GET['ticket_id']
-        except:
-            self.redirect("/error?msg=ticket was not found")
-            return
+    def get(self, ticket_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-        user = users.get_current_user()
-        usr_info = usr_mgt.retrieve(user)
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        if user and usr_info:
-            if not (usr_info.is_admin()):
-                self.redirect("/error?msg=User " + user.email + " not allowed to delete tickets")
-                return
+        # If user is not admin go to tickets list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_delete_tickets")
+            return self.redirect("/tickets")
 
-            access_link = users.create_logout_url("/")
+        # Get ticket by id
+        ticket = ndb.Key(urlsafe=ticket_id).get()
 
-            try:
-                ticket = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
+        # If ticket doesn't exist go to tickets list showing the error
+        if not ticket:
+            webapp2.add_flash("missing_ticket_to_delete")
+            return self.redirect("/tickets")
 
-            template_values = {
-                "info": AppInfo,
-                "usr_info": usr_info,
-                "access_link": access_link,
-                "ticket": ticket,
-                "Status": Ticket.Status,
-                "Type": Ticket.Type,
-                "Progress": Ticket.Progress,
-                "Priority": Ticket.Priority,
-            }
+        # Prepare variables to send to view
+        template_variables = {
+            "ticket": ticket,
+            "Status": Ticket.Status,
+            "Type": Ticket.Type,
+            "Progress": Ticket.Progress,
+            "Priority": Ticket.Priority,
+        }
 
-            jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("delete_ticket.html", **template_values));
-        else:
-            self.redirect("/")
+        # Render 'delete_ticket' view sending the variables 'template_variables'
+        return Globals.render_template(self, "delete_ticket.html", template_variables)
 
-        return
+    def post(self, ticket_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-    def post(self):
-        try:
-            id = self.request.GET['ticket_id']
-        except:
-            id = None
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        if not id:
-            self.redirect("/error?msg=missing id for modification")
-            return
+        # If user is not admin go to tickets list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_delete_tickets")
+            return self.redirect("/tickets")
 
-        user = users.get_current_user()
-        usr_info = usr_mgt.retrieve(user)
+        # Get ticket by id
+        ticket = ndb.Key(urlsafe=ticket_id).get()
 
-        if user and usr_info:
-            if not (usr_info.is_admin()):
-                self.redirect("/error?msg=user " + usr_info.email + "not allowed to delete users")
-                return
+        # If ticket doesn't exist go to tickets list showing the error
+        if not ticket:
+            webapp2.add_flash("missing_ticket_title")
+            return self.redirect("/tickets")
 
-            # Get ticket to delete by key
-            try:
-                ticket = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
+        # Delete ticket
+        ticket.key.delete()
 
-            # Delete
-            ticket.key.delete()
-            self.redirect("/info?url=/manage_tickets&msg=Ticket deleted: "
-                          + ticket.title.encode("ascii", "replace"))
-        else:
-            self.redirect("/")
+        # Set successful message and redirect to tickets list
+        webapp2.add_flash("ticket_deleted_successfully")
+        return self.redirect("/tickets")
 
 
 app = webapp2.WSGIApplication([
-    ("/tickets/delete", DeleteTicket),
+    ("/tickets/delete/(\d+)", DeleteTicket),
 ], debug=True)
