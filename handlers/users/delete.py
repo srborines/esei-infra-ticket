@@ -7,82 +7,71 @@ from google.appengine.ext import ndb
 from webapp2_extras import jinja2
 
 import model.user as usr_mgt
+from infra.globals import Globals
 from model.user import User
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 
 
 class DeleteUser(webapp2.RequestHandler):
-    def get(self):
-        try:
-            id = self.request.GET['user_id']
-        except:
-            self.redirect("/error?msg=user was not found")
-            return
+    def get(self, user_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-        user = users.get_current_user()
-        usr_info = usr_mgt.retrieve(user)
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        if user and usr_info:
-            if not (usr_info.is_admin()):
-                self.redirect("/error?msg=User " + user.email + " not allowed to delete users")
-                return
+        # If user is not admin go to users list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_delete_users")
+            return self.redirect("/users")
 
-            access_link = users.create_logout_url("/")
+        # Get user by id
+        user_to_delete = ndb.Key(urlsafe=user_id).get()
 
-            try:
-                user_to_delete = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
+        # If user doesn't exist go to users list showing the error
+        if not user_to_delete:
+            webapp2.add_flash("missing_user_to_delete")
+            return self.redirect("/users")
 
-            template_values = {
-                "info": AppInfo,
-                "access_link": access_link,
-                "usr_info": usr_info,
-                "user_to_delete": user_to_delete,
-                "user_desc": user_to_delete,
-                "Level": User.Level,
-            }
+        # Prepare variables to send to view
+        template_variables = {
+            "user_to_delete": user_to_delete,
+            "user_model": User
+        }
 
-            jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("delete_user.html", **template_values));
-        else:
-            self.redirect("/")
+        # Render 'delete_user' view sending the variables 'template_variables'
+        return Globals.render_template(self, "delete_user.html", template_variables)
 
-        return
+    def post(self, user_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-    def post(self):
-        try:
-            id = self.request.GET['user_id']
-        except:
-            id = None
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        if not id:
-            self.redirect("/error?msg=missing id for modification")
-            return
+        # If user is not admin go to users list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_delete_users")
+            return self.redirect("/users")
 
-        user = users.get_current_user()
+        # Get user by id
+        user_to_delete = ndb.Key(urlsafe=user_id).get()
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
+        # If user doesn't exist go to users list showing the error
+        if not user_to_delete:
+            webapp2.add_flash("missing_user_to_delete")
+            return self.redirect("/users")
 
-            if not (usr_info.is_admin()):
-                self.redirect("/error?msg=user " + usr_info.email + "not allowed to delete users")
-                return
-
-            # Get user to delete by key
-            try:
-                user_to_delete = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
-
-            # Delete
+        # Delete user
             user_to_delete.key.delete()
-            self.redirect("/info?url=/manage_users&msg=User deleted: "
-                            + user_to_delete.email.encode("ascii", "replace"))
-        else:
-            self.redirect("/")
+
+        # Set successful message and redirect to users list
+        webapp2.add_flash("user_deleted_successfully")
+        return self.redirect("/users")
 
 
 app = webapp2.WSGIApplication([

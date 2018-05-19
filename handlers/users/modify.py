@@ -3,96 +3,87 @@
 
 
 import webapp2
-from google.appengine.api import users
 from google.appengine.ext import ndb
-from webapp2_extras import jinja2
 
-import model.user as usr_mgt
+from infra.globals import Globals
 from model.user import User
-from model.appinfo import AppInfo
 
 
 class ModifyUser(webapp2.RequestHandler):
-    def get(self):
-        try:
-            id = self.request.GET['user_id']
-        except:
-            self.redirect("/error?msg=user was not found")
-            return
+    def get(self, user_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-        user = users.get_current_user()
-        user_info = usr_mgt.retrieve(user)
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        if user and user_info:
-            access_link = users.create_logout_url("/")
+        # If user is not admin go to users list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_edit_users")
+            return self.redirect("/")
 
-            if not(user_info.is_admin()):
-                self.redirect("/error?msg=User " + user_info.email + " not allowed to modify users")
-                return
+        # Get user by id
+        user_to_modify = ndb.Key(urlsafe=user_id).get()
 
-            try:
-                user_to_modify = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
+        # If user doesn't exist go to users index showing the error
+        if not user_to_modify:
+            webapp2.add_flash("user_not_exist")
+            return self.redirect("/users")
 
-            template_values = {
-                "info": AppInfo,
-                "access_link": access_link,
-                "usr_info": user_info,
-                "user_to_modify": user_to_modify,
-                "Level": User.Level,
-            }
+        # Prepare variables to send to view
+        template_variables = {
+            "user_to_modify": user_to_modify,
+            "user_model": User
+        }
 
-            jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("modify_user.html", **template_values));
-        else:
-            self.redirect("/")
+        # Render 'modify_user' view sending the variables 'template_variables'
+        return Globals.render_template(self, "modify_user.html", template_variables)
 
-    def post(self):
-        try:
-            id = self.request.GET['user_id']
-        except:
-            id = None
+    def post(self, user_id):
+        # Get current user information
+        user, user_info = Globals.get_user_info()
 
-        if not id:
-            self.redirect("/error?msg=missing id for modification")
-            return
+        # Check if user is logged, if not redirect to home
+        if not user or not user_info:
+            webapp2.add_flash("not_logged_user")
+            return self.redirect("/")
 
-        user = users.get_current_user()
+        # If user is not admin go to users list showing that he has not permissions
+        if not (user_info.is_admin()):
+            webapp2.add_flash("not_allowed_edit_users")
+            return self.redirect("/")
 
-        if user:
-            usr_info = usr_mgt.retrieve(user)
+        # Get user by id
+            user_to_modify = ndb.Key(urlsafe=user_id).get()
 
-            if not(usr_info.is_admin()):
-                self.redirect("/error?msg=user " + usr_info.email + " not allowed to modify other users")
+        # If user doesn't exist go to users index showing the error
+        if not user_to_modify:
+            webapp2.add_flash("user_not_exist")
+            return self.redirect("/users")
 
-            # Get user by key
-            try:
-                user_to_modify = ndb.Key(urlsafe=id).get()
-            except:
-                self.redirect("/error?msg=key #" + id + " does not exist")
-                return
+        # Set all parameters from the request to user
+        user_to_modify.email = self.request.get("email", "").strip()
+        user_to_modify.nick = self.request.get("nick", "").strip()
+        user_to_modify.level = User.Level.value_from_str(self.request.get("level", "Client").strip())
 
-            user_to_modify.email = self.request.get("email", "").strip()
-            user_to_modify.nick = self.request.get("nick", "").strip()
-            user_to_modify.level = User.Level.value_from_str(self.request.get("level", "Client").strip())
+        # If user email is missing return to modify view showing the error
+        if len(user_to_modify.email) < 1:
+            webapp2.add_flash("missing_user_email")
+            return self.redirect("/users/modify/" + user_id)
 
-            # Chk
-            if len(user_to_modify.email) < 1:
-                self.redirect("/error?msg=Aborted modification: missing email")
-                return
+        # If user nick is missing return to modify view showing the error
+        if len(user_to_modify.nick) < 1:
+            webapp2.add_flash("missing_user_nick")
+            return self.redirect("/users/modify/" + user_id)
 
-            if len(user_to_modify.nick) < 1:
-                self.redirect("/error?msg=Aborted modification: missing nick")
-                return
+        # Save user
+        User.update(user_to_modify)
 
-            # Save
-            usr_mgt.update(user_to_modify)
-            self.redirect("/info?url=/manage_users&msg=User modified: "
-                          + user_to_modify.email.encode("ascii", "replace"))
-        else:
-            self.redirect("/")
+        # Set successful message and redirect to users list
+        webapp2.add_flash("user_modified_successfully")
+        return self.redirect("/users")
 
 
 app = webapp2.WSGIApplication([

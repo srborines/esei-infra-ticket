@@ -34,10 +34,7 @@ class DeleteTicket(webapp2.RequestHandler):
         # Prepare variables to send to view
         template_variables = {
             "ticket": ticket,
-            "Status": Ticket.Status,
-            "Type": Ticket.Type,
-            "Progress": Ticket.Progress,
-            "Priority": Ticket.Priority,
+            "ticket_model": Ticket
         }
 
         # Render 'delete_ticket' view sending the variables 'template_variables'
