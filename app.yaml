@@ -37,11 +37,11 @@ handlers:
   script: handlers.users.add.app
   login: required
 
-- url: /users/modify/(\d+)
+- url: /users/modify/(.+)
   script: handlers.users.modify.app
   login: required
 
-- url: /users/delete
+- url: /users/delete/(.+)
   script: handlers.users.delete.app
   login: required
 
@@ -61,11 +61,11 @@ handlers:
   script: handlers.tickets.toner.app
   login: required
 
-- url: /tickets/modify/(\d+)
+- url: /tickets/modify/(.+)
   script: handlers.tickets.modify.app
   login: required
 
-- url: /tickets/delete
+- url: /tickets/delete/(.+)
   script: handlers.tickets.delete.app
   login: required
 

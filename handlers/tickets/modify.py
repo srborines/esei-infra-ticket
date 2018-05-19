@@ -86,5 +86,5 @@ class ModifyTicket(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ("/tickets/modify/(\d+)", ModifyTicket),
+    ("/tickets/modify/(.+)", ModifyTicket),
 ], debug=True)

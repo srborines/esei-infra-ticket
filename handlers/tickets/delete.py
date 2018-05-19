@@ -71,5 +71,5 @@ class DeleteTicket(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ("/tickets/delete/(\d+)", DeleteTicket),
+    ("/tickets/delete/(.+)", DeleteTicket),
 ], debug=True)
