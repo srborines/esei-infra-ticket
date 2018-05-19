@@ -30,14 +30,14 @@ handlers:
   login: admin
 
 - url: /users
-  script: handlers.users.app
+  script: handlers.users.manage.app
   login: required
 
 - url: /users/add
   script: handlers.users.add.app
   login: required
 
-- url: /users/modify
+- url: /users/modify/(\d+)
   script: handlers.users.modify.app
   login: required
 
@@ -61,7 +61,7 @@ handlers:
   script: handlers.tickets.toner.app
   login: required
 
-- url: /tickets/modify
+- url: /tickets/modify/(\d+)
   script: handlers.tickets.modify.app
   login: required
 
