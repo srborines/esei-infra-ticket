@@ -5,8 +5,8 @@
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
-from model.enums import Enum
-from model.appinfo import AppInfo
+from enum import Enum
+from infra.appinfo import AppInfo
 
 
 class User(ndb.Model):
