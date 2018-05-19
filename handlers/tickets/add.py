@@ -3,6 +3,7 @@
 
 import webapp2
 from infra.globals import Globals
+from model.ticket import Ticket
 
 
 class AddTicket(webapp2.RequestHandler):
@@ -16,7 +17,9 @@ class AddTicket(webapp2.RequestHandler):
             return self.redirect("/")
 
         # Prepare variables to send to view
-        template_variables = {}
+        template_variables = {
+            "ticket_model": Ticket,
+        }
 
         # Render 'add_ticket' view sending the variables 'template_variables'
         return Globals.render_template(self, "add_ticket.html", template_variables)
