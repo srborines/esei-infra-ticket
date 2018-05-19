@@ -75,5 +75,5 @@ class DeleteUser(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ("/users/delete/(\d+)", DeleteUser),
+    ("/users/delete/(.+)", DeleteUser),
 ], debug=True)

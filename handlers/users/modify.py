@@ -87,5 +87,5 @@ class ModifyUser(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ("/users/modify/(\d+)", ModifyUser),
+    ("/users/modify/(.+)", ModifyUser),
 ], debug=True)
