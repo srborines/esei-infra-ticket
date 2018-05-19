@@ -25,12 +25,13 @@ class ModifyTicket(webapp2.RequestHandler):
 
         # If ticket doesn't exist go to tickets index showing the error
         if not ticket:
-            webapp2.add_flash("missing_ticket_title")
+            webapp2.add_flash("ticket_not_exist")
             return self.redirect("/tickets")
 
         # Prepare variables to send to view
         template_variables = {
-            'ticket': ticket
+            'ticket': ticket,
+            "ticket_model": Ticket
         }
 
         # Render 'modify_ticket' view sending the variables 'template_variables'
