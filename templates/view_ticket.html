@@ -1,0 +1,66 @@
+{% extends "skeleton.html" %} {% block content %}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <form>
+                <h1>Ticket #{{ticket.serial}}</h1>
+                <fieldset>
+                    <div class="form-group">
+                        <label for="title">Ticket title</label>
+                        <input disabled value="{{ticket.title}}" type="text" class="form-control" placeholder="Empty title">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Client email</label>
+                        <input disabled value="{{ticket.client_email}}" type="email" class="form-control" placeholder="Empty email">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Classroom</label>
+                        <input disabled value="{{ticket.classroom}}" type="text" class="form-control" placeholder="Empty classroom">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Description</label>
+                        <textarea disabled class="form-control" rows="3">{{ticket.desc}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ticket progress</label>
+                        <select disabled class="form-control">
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='New' %} selected {% endif %}>New</option>
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='Stalled' %} selected {% endif %}>Stalled</option>
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='Tracked' %} selected {% endif %}>Tracked</option>
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='Fixed' %} selected {% endif %}>Fixed</option>
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='Inapropriate' %} selected {% endif %}>Inapropriate</option>
+                            <option {% if ticket_model.Progress.values[ticket.progress]=='Impossible' %} selected {% endif %}>Impossible</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ticket status</label>
+                        <select disabled class="form-control">
+                            <option {% if ticket_model.Status.values[ticket.status]=='Open' %} selected {% endif %}>Open</option>
+                            <option {% if ticket_model.Status.values[ticket.status]=='Closed' %} selected {% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ticket priority</label>
+                        <select disabled class="form-control">
+                            <option {% if ticket_model.Priority.values[ticket.priority]=='Low' %} selected {% endif %}>Low</option>
+                            <option {% if ticket_model.Priority.values[ticket.priority]=='Normal' %} selected {% endif %}>Normal</option>
+                            <option {% if ticket_model.Priority.values[ticket.priority]=='High' %} selected {% endif %}>High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ticket type</label>
+                        <select disabled class="form-control">
+                            <option {% if ticket_model.Type.values[ticket.type]=='Repair' %} selected {% endif %}>Repair</option>
+                            <option {% if ticket_model.Type.values[ticket.type]=='Printer' %} selected {% endif %}>Printer</option>
+                            <option {% if ticket_model.Type.values[ticket.type]=='Software' %} selected {% endif %}>Software</option>
+                            <option {% if ticket_model.Type.values[ticket.type]=='Supplies' %} selected {% endif %}>Supplies</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
