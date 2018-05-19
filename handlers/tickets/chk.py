@@ -7,12 +7,11 @@ import webapp2
 from google.appengine.api import users
 from google.appengine.ext import ndb
 from webapp2_extras import jinja2
-import datetime as dt
 
 import model.ticket as tickets
 from model.ticket import Ticket
 import model.user as usr_mgt
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 
 
 class ChkTicket(webapp2.RequestHandler):
@@ -42,7 +41,7 @@ class ChkTicket(webapp2.RequestHandler):
                 self.redirect("/error?msg=User " + usr_info.email + " not allowed to check tickets")
                 return
 
-            template_values = {
+            template_variables = {
                 "info": AppInfo,
                 "usr_info": usr_info,
                 "access_link": access_link,
@@ -56,7 +55,7 @@ class ChkTicket(webapp2.RequestHandler):
             }
 
             jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("chk_ticket.html", **template_values))
+            self.response.write(jinja.render_template("chk_ticket.html", **template_variables))
         else:
             self.redirect("/")
 
