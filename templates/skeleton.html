@@ -23,6 +23,7 @@
         </button>
         <div class="collapse navbar-collapse" id="infranavbar">
             <ul class="navbar-nav mr-auto">
+                {% if logged %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="operationsdropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -30,16 +31,17 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="operationsdropdown">
                         {% if user_info.is_admin() %}
-                            <a class="dropdown-item" href="/tickets">Manage tickets</a>
-                            <a class="dropdown-item" href="/users">Manage users</a>
-                            <a class="dropdown-item" href="/report">Send email report</a>
+                        <a class="dropdown-item" href="/tickets">Manage tickets</a>
+                        <a class="dropdown-item" href="/users">Manage users</a>
+                        <a class="dropdown-item" href="/report">Send email report</a>
                         {% else %}
-                            <a class="dropdown-item" href="/tickets">My tickets</a>
+                        <a class="dropdown-item" href="/tickets">My tickets</a>
                         {% endif %}
-                            <a class="dropdown-item" href="/tickets/add">New ticket</a>
-                            <a class="dropdown-item" href="/tickets/toner">New toner ticket</a>
+                        <a class="dropdown-item" href="/tickets/add">New ticket</a>
+                        <a class="dropdown-item" href="/tickets/toner">New toner ticket</a>
                     </div>
                 </li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="nav-item">
