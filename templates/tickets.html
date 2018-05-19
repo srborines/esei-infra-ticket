@@ -58,21 +58,27 @@
                         <th>Name</th>
                         <th>Priority</th>
                         <th>Progress</th>
+                        {% if user_info.is_admin() %}
+                        <th>Actions</th>
+                        {% endif %}
+
                     </tr>
                 </thead>
                 <tbody>
                     {% for ticket in tickets %}
                     <tr class="clickable-row" data-href="/tickets/view/{{ ticket.key.urlsafe() }}">
-                            <td>{{ticket.serial}}</td>
-                            <td>{{ticket_model.Priority.values[ticket.priority]}}</td>
-                            <td>{{ticket_model.Progress.values[ticket.progress] }}</td>
-                            <td>
-                                {{ ticket.title }}
-                            </td>
-                            <td>
-                                <a href="/tickets/modify/{{ticket.key.urlsafe()}}" class="btn btn-info btn-sm">Edit</a>
-                            </td>
-                        </tr>
+                        <td>{{ticket.serial}}</td>
+                        <td>{{ticket_model.Priority.values[ticket.priority]}}</td>
+                        <td>{{ticket_model.Progress.values[ticket.progress] }}</td>
+                        <td>
+                            {{ ticket.title }}
+                        </td>
+                        {% if user_info.is_admin() %}
+                        <td>
+                            <a href="/tickets/modify/{{ticket.key.urlsafe()}}" class="btn btn-info btn-sm">Edit</a>
+                        </td>
+                        {% endif %}
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
