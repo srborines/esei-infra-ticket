@@ -49,8 +49,8 @@ handlers:
   script: handlers.tickets.manage.app
   login: required
 
-- url: /tickets/chk
-  script: handlers.tickets.chk.app
+- url: /tickets/view/(.+)
+  script: handlers.tickets.view.app
   login: required
 
 - url: /tickets/add
