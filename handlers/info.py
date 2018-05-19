@@ -5,7 +5,7 @@
 import webapp2
 from webapp2_extras import jinja2
 
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 import model.user as usr_mgt
 
 
@@ -22,7 +22,7 @@ class InfoHandler(webapp2.RequestHandler):
             self.redirect("error?msg=URL or Info message not found.")
             return
 
-        template_values = {
+        template_variables = {
             "usr_info": usr_mgt.create_empty_user(),
             "msg": msg,
             "info": AppInfo,
@@ -30,7 +30,7 @@ class InfoHandler(webapp2.RequestHandler):
         }
 
         jinja = jinja2.get_jinja2(app=self.app)
-        self.response.write(jinja.render_template("info.html", **template_values));
+        self.response.write(jinja.render_template("info.html", **template_variables));
 
 
 app = webapp2.WSGIApplication([

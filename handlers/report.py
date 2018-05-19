@@ -7,7 +7,7 @@ from google.appengine.api.mail import EmailMessage
 import datetime as dt
 
 
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 from model.ticket import Ticket
 
 

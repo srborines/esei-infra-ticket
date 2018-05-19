@@ -5,7 +5,7 @@
 import webapp2
 from webapp2_extras import jinja2
 
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 import model.user as usr_mgt
 
 
@@ -19,14 +19,14 @@ class ErrorHandler(webapp2.RequestHandler):
         if not msg:
             msg = "CRITICAL - contact development team"
 
-        template_values = {
+        template_variables = {
             "usr_info": usr_mgt.create_empty_user(),
             "error_msg": msg,
             "info": AppInfo
         }
 
         jinja = jinja2.get_jinja2(app=self.app)
-        self.response.write(jinja.render_template("error.html", **template_values));
+        self.response.write(jinja.render_template("error.html", **template_variables));
 
 
 app = webapp2.WSGIApplication([
