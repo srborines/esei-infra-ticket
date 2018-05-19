@@ -10,7 +10,7 @@ import logging as logs
 import model.user as usr_mgt
 import model.ticket as tickets
 from model.ticket import Ticket
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
 
 
 class AddToner(webapp2.RequestHandler):
@@ -21,14 +21,14 @@ class AddToner(webapp2.RequestHandler):
         if usr and usr_info:
             access_link = users.create_logout_url("/")
 
-            template_values = {
+            template_variables = {
                 "info": AppInfo,
                 "usr_info": usr_info,
                 "access_link": access_link,
             }
 
             jinja = jinja2.get_jinja2(app=self.app)
-            self.response.write(jinja.render_template("toner.html", **template_values))
+            self.response.write(jinja.render_template("toner.html", **template_variables))
         else:
             self.redirect("/")
 
