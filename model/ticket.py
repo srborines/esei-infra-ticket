@@ -3,13 +3,13 @@
 # (c) Baltasar 2018 MIT License <baltasarq@gmail.com>
 
 
-from google.appengine.api.mail import EmailMessage
 from google.appengine.ext import ndb
 import datetime as dt
 
-from model.enums import Enum
+from enum import Enum
 
-from model.appinfo import AppInfo
+from infra.appinfo import AppInfo
+from infra.globals import Globals
 
 
 class Comment(ndb.Model):
@@ -96,20 +96,12 @@ def send_std_email_for(ticket, subject, body):
     subject = subject + " ticket #" + str(ticket.serial)\
         + ' ' + ticket.title
 
-    send_email(AppInfo.BroadcastEmail, subject, body)
+    Globals.send_email(AppInfo.BroadcastEmail, subject, body)
     if ticket.client_email:
-        send_email(ticket.client_email, subject, body)
+        Globals.send_email(ticket.client_email, subject, body)
 
 
-def send_email(rcpt, subject, body):
-    subject = subject.encode("ascii", "replace")
-    body = body.encode("ascii", "replace")
 
-    EmailMessage(
-        sender=AppInfo.AppEmail,
-        subject=subject,
-        to=rcpt,
-        body=body).send()
 
 
 @ndb.transactional
