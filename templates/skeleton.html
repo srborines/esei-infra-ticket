@@ -43,19 +43,19 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="nav-item">
-                    {% if user_info.nick is defined %}
+                    {% if logged %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
                             {{user_info.nick}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="{{access_link}}">Log out</a>
+                            <a class="dropdown-item" href="{{logout_link}}">Log out</a>
                         </div>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{access_link}}">Log In</a>
+                        <a class="nav-link" href="{{login_link}}">Log In</a>
                     </li>
                     {% endif %}
                 </li>
